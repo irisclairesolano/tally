@@ -1,5 +1,9 @@
+-- Drop existing tables to start fresh
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
+
 -- Create categories table
-CREATE TABLE IF NOT EXISTS categories (
+CREATE TABLE categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   icon TEXT NOT NULL,
@@ -8,7 +12,7 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 -- Create transactions table
-CREATE TABLE IF NOT EXISTS transactions (
+CREATE TABLE transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   amount NUMERIC NOT NULL,
@@ -28,14 +32,19 @@ INSERT INTO categories (name, icon, color, type) VALUES
   ('Income', 'cash-outline', '#22A06B', 'income'),
   ('Side Hustle', 'school-outline', '#22A06B', 'income');
 
--- Insert seed transactions
+-- Insert seed transactions using WITH clause to avoid subquery issues
+WITH food_cat AS (SELECT id FROM categories WHERE name = 'Food' LIMIT 1),
+     transport_cat AS (SELECT id FROM categories WHERE name = 'Transport' LIMIT 1),
+     utilities_cat AS (SELECT id FROM categories WHERE name = 'Utilities' LIMIT 1),
+     leisure_cat AS (SELECT id FROM categories WHERE name = 'Leisure' LIMIT 1),
+     income_cat AS (SELECT id FROM categories WHERE name = 'Income' LIMIT 1)
 INSERT INTO transactions (title, amount, note, occurred_at, category_id) VALUES
-  ('Grocery shopping', -650, 'Weekly groceries at SM Supermarket', '2026-04-06T10:30:00', (SELECT id FROM categories WHERE name = 'Food')),
-  ('Jeepney fare', -85, 'Round trip to school', '2026-04-06T07:45:00', (SELECT id FROM categories WHERE name = 'Transport')),
-  ('Coffee', -120, 'Iced latte at Starbucks', '2026-04-06T14:15:00', (SELECT id FROM categories WHERE name = 'Food')),
-  ('Allowance', 5000, 'Weekly allowance from mom', '2026-04-05T08:00:00', (SELECT id FROM categories WHERE name = 'Income')),
-  ('Meralco bill', -1850, 'Electricity for March', '2026-04-05T16:20:00', (SELECT id FROM categories WHERE name = 'Utilities')),
-  ('Movie ticket', -350, 'Cinema with friends', '2026-04-04T19:00:00', (SELECT id FROM categories WHERE name = 'Leisure'));
+  ('Grocery shopping', -650, 'Weekly groceries at SM Supermarket', '2026-04-06T10:30:00', (SELECT id FROM food_cat)),
+  ('Jeepney fare', -85, 'Round trip to school', '2026-04-06T07:45:00', (SELECT id FROM transport_cat)),
+  ('Coffee', -120, 'Iced latte at Starbucks', '2026-04-06T14:15:00', (SELECT id FROM food_cat)),
+  ('Allowance', 5000, 'Weekly allowance from mom', '2026-04-05T08:00:00', (SELECT id FROM income_cat)),
+  ('Meralco bill', -1850, 'Electricity for March', '2026-04-05T16:20:00', (SELECT id FROM utilities_cat)),
+  ('Movie ticket', -350, 'Cinema with friends', '2026-04-04T19:00:00', (SELECT id FROM leisure_cat));
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
