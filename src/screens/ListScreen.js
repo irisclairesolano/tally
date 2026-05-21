@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,21 +7,45 @@ import EmptyState from '../components/EmptyState';
 import FAB from '../components/FAB';
 import TransactionRow from '../components/TransactionRow';
 import { useTransactions } from '../hooks/useTransactions';
-import { colors, radius, spacing } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
 
 export default function ListScreen({ navigation }) {
-  const { items, loading, fetchAll } = useTransactions();
+  const { colors } = useTheme();
+  const { items = [], loading, error, fetchAll } = useTransactions();
   const [filter, setFilter] = useState('All');
 
   const filtered = useMemo(() => {
-    if (filter === 'All')     return items;
-    if (filter === 'Income')  return items.filter(t => Number(t.amount) > 0);
-    if (filter === 'Expense') return items.filter(t => Number(t.amount) < 0);
-    return items;
+    const list = items || [];
+    if (filter === 'All')     return list;
+    if (filter === 'Income')  return list.filter(t => Number(t.amount) > 0);
+    if (filter === 'Expense') return list.filter(t => Number(t.amount) < 0);
+    return list;
   }, [items, filter]);
 
   const renderHeader = () => (
     <View style={{ marginBottom: spacing.md }}>
+      {error && (
+        <View style={{ 
+          backgroundColor: colors.danger + '15', 
+          padding: spacing.md, 
+          borderRadius: radius.md,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: spacing.sm,
+          marginBottom: spacing.md
+        }}>
+          <Ionicons name="cloud-offline-outline" size={20} color={colors.danger} />
+          <Text style={{ color: colors.danger, fontSize: 13, flex: 1 }}>
+            {error.includes('Network request failed') 
+              ? 'Connection error.' 
+              : error}
+          </Text>
+          <TouchableOpacity onPress={fetchAll} style={{ backgroundColor: colors.danger, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.sm }}>
+            <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={{
         flexDirection: 'row',
         backgroundColor: colors.surfaceAlt,
@@ -46,7 +71,7 @@ export default function ListScreen({ navigation }) {
         ))}
       </View>
       <Text style={{ fontSize: 13, color: colors.textMuted }}>
-        Showing {filtered.length} of {items.length} transactions
+        Showing {filtered?.length || 0} of {items?.length || 0} transactions
       </Text>
     </View>
   );
@@ -88,7 +113,7 @@ export default function ListScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchAll} tintColor={colors.primary} />} />
 
-      <FAB onPress={() => navigation.getParent()?.navigate('AddTransaction')} />
+      <FAB onPress={() => navigation.navigate('AddTransaction')} />
     </SafeAreaView>
   );
 }

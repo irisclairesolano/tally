@@ -8,9 +8,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTransactions } from '../hooks/useTransactions';
 import { useCategories }   from '../hooks/useCategories';
 import SectionLabel        from '../components/SectionLabel';
-import { colors, spacing, radius } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { spacing, radius } from '../theme/tokens';
 
 export default function AddTransactionScreen({ route, navigation }) {
+  const { colors } = useTheme();
   const editing = route?.params?.transaction ?? null;
   const isEdit  = !!editing;
 

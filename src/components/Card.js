@@ -1,7 +1,9 @@
 import { View } from 'react-native';
-import { colors, spacing, radius } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
 
 export default function Card({ children, style }) {
+  const { colors } = useTheme();
   return (
     <View style={[{
       backgroundColor: colors.surface,

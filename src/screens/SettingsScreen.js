@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { ScrollView, View, Text, Switch, Image } from 'react-native';
+import { Image, ScrollView, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Card         from '../components/Card';
+import Card from '../components/Card';
 import SectionLabel from '../components/SectionLabel';
-import SettingRow   from '../components/SettingRow';
-import { colors, spacing, radius } from '../theme/tokens';
+import SettingRow from '../components/SettingRow';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
 
 export default function SettingsScreen() {
-  const [darkMode, setDarkMode]   = useState(false);
+  const { isDarkMode, setIsDarkMode, colors } = useTheme();
   const [reminders, setReminders] = useState(true);
 
   return (
@@ -29,7 +30,7 @@ export default function SettingsScreen() {
             <SettingRow
               icon="moon-outline"
               label="Dark mode"
-              right={<Switch value={darkMode} onValueChange={setDarkMode} trackColor={{ true: colors.primary }} />} />
+              right={<Switch value={isDarkMode} onValueChange={setIsDarkMode} trackColor={{ true: colors.primary }} />} />
           </Card>
         </View>
 
@@ -38,7 +39,7 @@ export default function SettingsScreen() {
           <Card>
             <View style={{ alignItems: 'center', gap: spacing.sm }}>
               <Image
-                source={require('../../assets/images/logo.png')}
+                source={require('../../assets/icon.png')}
                 style={{ width: 48, height: 48, borderRadius: radius.md }} />
               <Text style={{ fontWeight: '700', fontSize: 16, color: colors.textPrimary }}>TALLY</Text>
               <Text style={{ fontSize: 12, color: colors.textMuted }}>Version 1.0.0 · Build 1</Text>

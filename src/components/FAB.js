@@ -1,8 +1,9 @@
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function FAB({ onPress, bottom = 24 }) {
+  const { colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}

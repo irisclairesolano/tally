@@ -1,9 +1,15 @@
 {
-  "cli": { "appVersionSource": "app.json" },
+  "cli": { "appVersionSource": "local" },
   "build": {
     "preview": {
-      "android": { "buildType": "apk" },
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://clciotomctfzbafzufin.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsY2lvdG9tY3RmemJhZnp1ZmluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTc2NDQsImV4cCI6MjA5NDY3MzY0NH0.7Psqi5jmMZcUaNJqyCM0YwcenHivHyzXLu1ogZ9stqU"
+      }
     },
     "production": { "autoIncrement": true }
   },

@@ -5,9 +5,11 @@ import Card from '../components/Card';
 import MemberCard from '../components/MemberCard';
 import SectionLabel from '../components/SectionLabel';
 import { groupMembers } from '../data/members';
-import { colors, radius, spacing } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
 
 export default function ProfileScreen() {
+  const { colors } = useTheme();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }}>

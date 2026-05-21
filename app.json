@@ -18,9 +18,14 @@
       "package": "com.tallyteam.tally",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#F7F6F1"
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "enableProguardInReleaseBuilds": true
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "extra": {
       "eas": {

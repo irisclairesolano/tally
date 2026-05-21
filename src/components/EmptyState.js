@@ -1,8 +1,10 @@
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radius } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { spacing, radius } from '../theme/tokens';
 
 export default function EmptyState({ icon = 'receipt-outline', title, body }) {
+  const { colors } = useTheme();
   return (
     <View style={{ alignItems: 'center', padding: spacing.xxl, gap: spacing.sm }}>
       <View style={{

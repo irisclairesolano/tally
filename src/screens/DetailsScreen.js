@@ -3,19 +3,20 @@ import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTransactions } from '../hooks/useTransactions';
-import { colors, radius, spacing } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
+import { addOpacity, formatPeso, formatDate, formatTime } from '../lib/utils';
 
 export default function DetailsScreen({ route, navigation }) {
+  const { colors } = useTheme();
   const { transaction } = route.params;
   const { remove } = useTransactions();
-  const peso = (n) => '₱' + n.toLocaleString();
 
   const sign = Number(transaction.amount) >= 0 ? '+' : '−';
   const color = Number(transaction.amount) >= 0 ? colors.income : colors.expense;
 
-  const dateObj = new Date(transaction.occurred_at);
-  const dateStr = dateObj.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
-  const timeStr = dateObj.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' });
+  const dateStr = formatDate(transaction.occurred_at);
+  const timeStr = formatTime(transaction.occurred_at);
 
   const handleDelete = () => {
     Alert.alert(
@@ -40,7 +41,7 @@ export default function DetailsScreen({ route, navigation }) {
   };
 
   const handleEdit = () => {
-    navigation.getParent()?.navigate('AddTransaction', { transaction });
+    navigation.navigate('AddTransaction', { transaction });
   };
 
   return (
@@ -57,7 +58,7 @@ export default function DetailsScreen({ route, navigation }) {
           <View style={{
             width: 56, height: 56,
             borderRadius: 28,
-            backgroundColor: (transaction.category?.color ?? colors.primary) + '20',
+            backgroundColor: addOpacity(transaction.category?.color ?? colors.primary, '20'),
             alignItems: 'center', justifyContent: 'center',
           }}>
             <Ionicons name={transaction.category?.icon ?? 'cash-outline'} size={28} color={transaction.category?.color ?? colors.primary} />
@@ -66,7 +67,7 @@ export default function DetailsScreen({ route, navigation }) {
             {transaction.title}
           </Text>
           <Text style={{ fontSize: 32, fontWeight: '800', color: color }}>
-            {sign}{peso(Math.abs(Number(transaction.amount)))}
+            {sign}{formatPeso(Math.abs(Number(transaction.amount)))}
           </Text>
           <Text style={{ fontSize: 13, color: colors.textMuted, textTransform: 'uppercase' }}>
             {transaction.category?.name ?? 'Uncategorized'}

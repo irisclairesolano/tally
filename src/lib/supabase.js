@@ -9,11 +9,15 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.warn('Supabase env vars missing. Did you create .env?');
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-});
+export const supabase = createClient(
+  SUPABASE_URL || 'https://placeholder.supabase.co',
+  SUPABASE_ANON_KEY || 'placeholder_key',
+  {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
+);

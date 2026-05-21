@@ -1,7 +1,8 @@
 import { Text } from 'react-native';
-import { colors } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
 
 export default function SectionLabel({ children }) {
+  const { colors } = useTheme();
   return (
     <Text style={{
       fontSize: 11,

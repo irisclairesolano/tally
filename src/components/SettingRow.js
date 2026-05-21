@@ -1,8 +1,10 @@
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { spacing } from '../theme/tokens';
 
 export default function SettingRow({ icon, label, value, right }) {
+  const { colors } = useTheme();
   return (
     <View style={{
       flexDirection: 'row',

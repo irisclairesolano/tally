@@ -1,7 +1,9 @@
 import { Image, Text, View } from 'react-native';
-import { colors, radius, spacing } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { radius, spacing } from '../theme/tokens';
 
 export default function MemberCard({ name, photo }) {
+  const { colors } = useTheme();
   return (
     <View style={{
       flexDirection: 'row',

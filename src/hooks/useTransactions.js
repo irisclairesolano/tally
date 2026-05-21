@@ -1,25 +1,40 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import { fallbackTransactions } from '../data/transactions';
 
 export function useTransactions() {
-  const [items, setItems]     = useState([]);
+  const [items, setItems]     = useState(fallbackTransactions);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase
-      .from('transactions')
-      .select(`
-        id, title, amount, note, occurred_at,
-        category:categories ( id, name, icon, color, type )
-      `)
-      .order('occurred_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select(`
+          id, title, amount, note, occurred_at,
+          category:categories ( id, name, icon, color, type )
+        `)
+        .order('occurred_at', { ascending: false });
 
-    if (error) setError(error.message);
-    else setItems(data || []);
-    setLoading(false);
+      if (error) {
+        console.warn('Supabase transactions fetch failed, using fallbacks:', error.message);
+        setError(error.message);
+        // Don't overwrite if we already have items (might be from a previous successful fetch)
+        setItems(prev => prev.length > 0 ? prev : fallbackTransactions);
+      } else if (data && data.length > 0) {
+        setItems(data);
+      } else {
+        setItems(fallbackTransactions);
+      }
+    } catch (e) {
+      console.warn('Supabase error, using fallbacks:', e.message);
+      setItems(prev => prev.length > 0 ? prev : fallbackTransactions);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const add = useCallback(async (payload) => {

@@ -1,11 +1,14 @@
 import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radius } from '../theme/tokens';
+import { useTheme } from '../theme/ThemeContext';
+import { spacing, radius } from '../theme/tokens';
+import { addOpacity, formatPeso } from '../lib/utils';
 
 export default function TransactionRow({ title, category, amount, icon, color }) {
+  const { colors } = useTheme();
   const isIncome = amount >= 0;
   const tint = isIncome ? colors.income : colors.expense;
-  const bgTint = (color ?? colors.primary) + '22'; // ~13% opacity hex suffix
+  const bgTint = addOpacity(color ?? colors.primary, '22');
 
   return (
     <View style={{
@@ -21,7 +24,7 @@ export default function TransactionRow({ title, category, amount, icon, color })
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <Ionicons name={icon} size={18} color={color ?? colors.textSecondary} />
+        <Ionicons name={icon || 'cash-outline'} size={18} color={color ?? colors.textSecondary} />
       </View>
 
       <View style={{ flex: 1 }}>
@@ -30,7 +33,7 @@ export default function TransactionRow({ title, category, amount, icon, color })
       </View>
 
       <Text style={{ fontSize: 15, fontWeight: '600', color: tint }}>
-        {isIncome ? '+' : '−'}₱{Math.abs(amount).toLocaleString()}
+        {isIncome ? '+' : '−'}{formatPeso(Math.abs(amount))}
       </Text>
     </View>
   );
