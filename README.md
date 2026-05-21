@@ -24,7 +24,7 @@ A React Native mobile application built with Expo that helps Filipino students t
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/irisclairesolano/tally.git
 cd tally
 ```
 
